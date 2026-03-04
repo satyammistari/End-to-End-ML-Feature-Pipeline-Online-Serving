@@ -1,0 +1,36 @@
+# ── Build stage ──────────────────────────────────────────────────────────────
+FROM python:3.11-slim AS builder
+
+WORKDIR /app
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir --upgrade pip \
+ && pip install --no-cache-dir --prefix=/install -r requirements.txt
+
+# ── Runtime stage ─────────────────────────────────────────────────────────────
+FROM python:3.11-slim AS runtime
+
+LABEL maintainer="data-team"
+LABEL description="ML Feature Pipeline – REST + gRPC API"
+
+WORKDIR /app
+
+# Non-root user for security
+RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
+
+COPY --from=builder /install /usr/local
+COPY src/ ./src/
+COPY config/ ./config/
+
+USER appuser
+
+EXPOSE 8000 50051
+
+HEALTHCHECK --interval=10s --timeout=5s --retries=3 \
+  CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/v1/health')"
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app
+
+CMD ["uvicorn", "src.api.rest_api:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]

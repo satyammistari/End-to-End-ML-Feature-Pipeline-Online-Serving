@@ -1,0 +1,66 @@
+kafka:
+  bootstrap_servers: "localhost:9092"
+  consumer_group: "feature-pipeline"
+  topics:
+    - "user-events"
+    - "transaction-events"
+    - "user-login-events"
+  producer:
+    acks: "all"
+    retries: 5
+    linger_ms: 10
+  consumer:
+    max_poll_records: 500
+    session_timeout_ms: 30000
+    auto_offset_reset: "earliest"
+  dlq_topic: "feature-pipeline-dlq"
+
+redis:
+  host: "localhost"
+  port: 6379
+  db: 0
+  password: ""
+  cluster_enabled: false
+  max_connections: 50
+  socket_timeout_ms: 100
+  default_ttl_seconds: 3600
+
+postgres:
+  host: "localhost"
+  port: 5432
+  database: "features"
+  user: "feature_user"
+  password: "feature_pass"
+  min_connections: 2
+  max_connections: 20
+  table: "feature_values"
+  use_timescaledb: true
+
+api:
+  grpc_port: 50051
+  rest_port: 8000
+  workers: 4
+  cors_origins:
+    - "*"
+  rate_limit_per_minute: 10000
+
+features:
+  batch_schedule: "0 */1 * * *"   # Hourly
+  online_ttl_seconds: 3600
+  offline_ttl_days: 90
+  backfill_batch_size: 10000
+  validation_enabled: true
+
+monitoring:
+  prometheus_enabled: true
+  pushgateway_url: "http://localhost:9091"
+  push_interval_seconds: 15
+
+logging:
+  level: "INFO"
+  json_format: true
+  service_name: "feature-pipeline"
+
+experiment:
+  default_significance_level: 0.05
+  min_sample_size: 100

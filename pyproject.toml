@@ -1,0 +1,83 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "ml-feature-pipeline"
+version = "1.0.0"
+description = "Production-grade ML feature engineering pipeline with real-time and batch processing"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+# ──────────────────────────────────────────────────────────────────────────────
+# pytest
+# ──────────────────────────────────────────────────────────────────────────────
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = [
+    "--tb=short",
+    "-v",
+    "--strict-markers",
+]
+markers = [
+    "unit: fast unit tests with no external dependencies",
+    "integration: tests requiring mocked or real external services",
+    "performance: latency and throughput benchmarks",
+]
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Coverage
+# ──────────────────────────────────────────────────────────────────────────────
+[tool.coverage.run]
+source = ["src"]
+omit = ["src/api/proto/*", "*/migrations/*"]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+]
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Black
+# ──────────────────────────────────────────────────────────────────────────────
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311"]
+skip-string-normalization = false
+
+# ──────────────────────────────────────────────────────────────────────────────
+# isort
+# ──────────────────────────────────────────────────────────────────────────────
+[tool.isort]
+profile = "black"
+line_length = 100
+known_first_party = ["src"]
+
+# ──────────────────────────────────────────────────────────────────────────────
+# mypy
+# ──────────────────────────────────────────────────────────────────────────────
+[tool.mypy]
+python_version = "3.11"
+strict = false
+ignore_missing_imports = true
+warn_return_any = true
+warn_unused_ignores = true
+exclude = ["tests/", "src/api/proto/"]
+
+# ──────────────────────────────────────────────────────────────────────────────
+# flake8 (configured via .flake8 or setup.cfg – listed here for reference)
+# ──────────────────────────────────────────────────────────────────────────────
+[tool.flake8]
+max-line-length = 100
+extend-ignore = ["E203", "W503"]
+exclude = [".git", "__pycache__", "src/api/proto"]

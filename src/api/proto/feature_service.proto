@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package feature_service;
+
+// ─── Service ────────────────────────────────────────────────────────────────
+
+service FeatureService {
+  // Single-entity or small-batch synchronous lookup
+  rpc GetFeatures(GetFeaturesRequest) returns (GetFeaturesResponse);
+
+  // Server-side streaming for large batches (>100 entities)
+  rpc GetFeaturesBatch(GetFeaturesBatchRequest) returns (stream GetFeaturesResponse);
+}
+
+// ─── Messages ────────────────────────────────────────────────────────────────
+
+message GetFeaturesRequest {
+  repeated string entity_ids    = 1;
+  repeated string feature_names = 2;
+  string          feature_group = 3;
+  string          feature_version = 4;  // empty = latest
+}
+
+message GetFeaturesBatchRequest {
+  repeated string entity_ids    = 1;
+  repeated string feature_names = 2;
+  string          feature_group = 3;
+  string          feature_version = 4;
+  int32           chunk_size    = 5;    // 0 = server chooses (default 100)
+}
+
+message EntityFeatures {
+  string            entity_id = 1;
+  map<string,string> features = 2;
+  bool              cache_hit = 3;
+  string            version   = 4;
+}
+
+message GetFeaturesResponse {
+  repeated EntityFeatures entity_features = 1;
+  int64                   served_at_ms    = 2;  // Unix epoch milliseconds
+}
