@@ -10,7 +10,7 @@ Implements the feature store pattern used at Uber (Michelangelo), LinkedIn (Feat
 ![HCgEQLxa8AAXUSI](https://github.com/user-attachments/assets/b0861f7c-7b01-4325-a977-1fc0fb99a525)
 ![HCklyUUawAoCWHb](https://github.com/user-attachments/assets/4a7cb132-a0c1-4e0b-94f6-f45a889d8914)
 ![HCkfwLha4AA7IaY](https://github.com/user-attachments/assets/afed5996-4d5a-4c81-8ac2-90b72599696b)
-![HCkfwLha4AA7IaY](https://github.com/user-attachments/assets/5f886c10-7eaf-4767-8bc6-265954a13d29)
+<img width="677" height="680" alt="HCkiJNRawAcpglO" src="https://github.com/user-attachments/assets/3ac1afb6-4156-4c1e-ac6e-470b7bed5451" />
 
 
 ```
